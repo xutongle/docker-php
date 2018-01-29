@@ -37,7 +37,7 @@ before_install:
 
 before_script:
   - env | sort
-  - image="yuncms/php:${VERSION}-${VARIANT}"
+  - image="xutongle/php:${VERSION}-${VARIANT}"
 
 script:
   - travis_retry docker build --build-arg PHP_BASE_IMAGE_VERSION=${VERSION}-${VARIANT} -t "$image" .
@@ -47,20 +47,17 @@ after_success:
       docker login --username="${DOCKER_REGISTRY_USER}" --password="${DOCKER_REGISTRY_PASSWORD}";
       docker push $image;
       if [ "${VARIANT}" == "fpm" ]; then
-          docker tag $image yuncms/php:${VERSION};
-          docker push yuncms/php:${VERSION};
-          docker tag $image yuncms/php:${PHP_VERSION};
-          docker push yuncms/php:${PHP_VERSION};
+          docker tag $image xutongle/php:${VERSION};
+          docker push xutongle/php:${VERSION};
+          docker tag $image xutongle/php:${PHP_VERSION};
+          docker push xutongle/php:${PHP_VERSION};
       fi;
       if [ "${VERSION}" == "7.1" ]; then
           if [ "${VARIANT}" == "fpm" ]; then
-            docker tag $image yuncms/php:latest;
-            docker push yuncms/php:latest;
+            docker tag $image xutongle/php:latest;
+            docker push xutongle/php:latest;
           fi
       fi
     fi
-
-notifications:
-   webhooks: https://oapi.dingtalk.com/robot/send?access_token=db74d11bbc46e5a7533a4de2976f335168585c0cbb2ab8caf189169e8ea537e9
 
 # vim:set et ts=2 sw=2:
