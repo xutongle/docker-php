@@ -1,0 +1,66 @@
+language: bash
+
+sudo: required
+
+services:
+  - docker
+
+env:
+#   7.0
+  - VERSION=7.0 VARIANT=cli PHP_VERSION=7.0.27
+  - VERSION=7.0 VARIANT=fpm-base PHP_VERSION=7.0.27
+  - VERSION=7.0 VARIANT=build PHP_VERSION=7.0.27
+  - VERSION=7.0 VARIANT=nginx PHP_VERSION=7.0.27
+  - VERSION=7.0 VARIANT=fpm PHP_VERSION=7.0.27
+  - VERSION=7.0 VARIANT=httpd PHP_VERSION=7.0.27
+#   7.1
+  - VERSION=7.1 VARIANT=cli PHP_VERSION=7.1.13
+  - VERSION=7.1 VARIANT=fpm-base PHP_VERSION=7.1.13
+  - VERSION=7.1 VARIANT=build PHP_VERSION=7.1.13
+  - VERSION=7.1 VARIANT=nginx PHP_VERSION=7.1.13
+  - VERSION=7.1 VARIANT=fpm PHP_VERSION=7.1.13
+  - VERSION=7.1 VARIANT=httpd PHP_VERSION=7.1.13
+#   7.2
+  - VERSION=7.2 VARIANT=cli PHP_VERSION=7.2.1
+  - VERSION=7.2 VARIANT=fpm-base PHP_VERSION=7.2.1
+  - VERSION=7.2 VARIANT=build PHP_VERSION=7.2.1
+  - VERSION=7.2 VARIANT=nginx PHP_VERSION=7.2.1
+  - VERSION=7.2 VARIANT=fpm PHP_VERSION=7.2.1
+  - VERSION=7.2 VARIANT=httpd PHP_VERSION=7.2.1
+
+before_install:
+  - export DOCKER_COMPOSE_VERSION=1.18.0
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+before_script:
+  - env | sort
+  - image="yuncms/php:${VERSION}-${VARIANT}"
+
+script:
+  - travis_retry docker build --build-arg PHP_BASE_IMAGE_VERSION=${VERSION}-${VARIANT} -t "$image" .
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker login --username="${DOCKER_REGISTRY_USER}" --password="${DOCKER_REGISTRY_PASSWORD}";
+      docker push $image;
+      if [ "${VARIANT}" == "fpm" ]; then
+          docker tag $image yuncms/php:${VERSION};
+          docker push yuncms/php:${VERSION};
+          docker tag $image yuncms/php:${PHP_VERSION};
+          docker push yuncms/php:${PHP_VERSION};
+      fi;
+      if [ "${VERSION}" == "7.1" ]; then
+          if [ "${VARIANT}" == "fpm" ]; then
+            docker tag $image yuncms/php:latest;
+            docker push yuncms/php:latest;
+          fi
+      fi
+    fi
+
+notifications:
+   webhooks: https://oapi.dingtalk.com/robot/send?access_token=db74d11bbc46e5a7533a4de2976f335168585c0cbb2ab8caf189169e8ea537e9
+
+# vim:set et ts=2 sw=2:
