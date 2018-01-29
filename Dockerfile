@@ -11,6 +11,7 @@ RUN set -xe \
 		libmemcached-dev \
 		libyaml-dev \
 		libnghttp2-dev \
+		libssl-dev \
 	" \
 	\
 #	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
