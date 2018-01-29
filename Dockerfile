@@ -87,7 +87,6 @@ RUN set -xe \
 	&& tar zxf hiredis-0.13.3.tar.gz \
 	&& rm -rf hiredis-0.13.3.tar.gz \
 	&& cd hiredis-0.13.3 \
-	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /usr/local/src/hiredis-0.13.3 \
