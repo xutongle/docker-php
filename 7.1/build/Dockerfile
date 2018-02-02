@@ -24,7 +24,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/xdebug-${XDEBUG_VERSION} \
-	&& echo "zend_extension=xdebug.so" >> ${PHP_INI_DIR}/php/xdebug.ini
+	&& echo "zend_extension=xdebug.so" >> ${PHP_INI_DIR}/php/xdebug.ini \
 	\
 	&& apk del .build-deps
 
