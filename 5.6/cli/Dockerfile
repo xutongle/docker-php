@@ -58,6 +58,7 @@ RUN set -xe \
 	&& tar zxf php-${PHP_VERSION}.tar.gz \
 	&& rm -f php-${PHP_VERSION}.tar.gz \
 	&& cd /tmp/php-${PHP_VERSION} \
+	&& sed -i 's/buffio.h/tidybuffio.h/' ext/tidy/*.c \
 	&& ./configure \
 		--prefix=/usr/local \
 		--libdir=/usr/local/lib64 \
