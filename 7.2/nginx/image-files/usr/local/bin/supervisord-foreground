@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+rm -f /run/supervisord.pid
+
+exec supervisord -n -c /etc/supervisor/supervisord.conf "$@"
