@@ -141,6 +141,7 @@ RUN set -xe \
 		yaml \
 		nghttp2 \
 		cyrus-sasl \
+		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
 		yaml-dev \
@@ -148,6 +149,7 @@ RUN set -xe \
 		libressl-dev \
 		cyrus-sasl-dev \
 		linux-headers \
+		zlib-dev \
 	" \
 	\
 	&& apk add --no-cache --virtual .build-deps \

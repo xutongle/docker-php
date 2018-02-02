@@ -140,12 +140,14 @@ RUN set -xe \
 		yaml \
 		nghttp2 \
 		cyrus-sasl \
+		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
 		yaml-dev \
 		nghttp2-dev \
 		libressl-dev \
 		cyrus-sasl-dev \
+		zlib-dev \
 		linux-headers \
 	" \
 	\

@@ -46,7 +46,7 @@ RUN set -xe \
 		libzip-dev \
 	" \
 	\
-#	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
+	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
 	&& apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 	    $buildDeps  \
@@ -140,12 +140,14 @@ RUN set -xe \
 		yaml \
 		nghttp2 \
 		cyrus-sasl \
+		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
 		yaml-dev \
 		nghttp2-dev \
 		libressl-dev \
 		cyrus-sasl-dev \
+		zlib-dev \
 	" \
 	\
 	&& apk add --no-cache --virtual .build-deps \

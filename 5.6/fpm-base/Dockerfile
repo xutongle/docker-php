@@ -5,11 +5,10 @@ LABEL maintainer="xutongle@gmail.com"
 ARG PHP_VERSION
 
 # Environment settings
-ENV PHP_VERSION ${PHP_VERSION:-7.2.1}
-ENV PHP_TGZ_URL http://php.net/distributions/php-${PHP_VERSION}.tar.gz
-ENV PHP_INI_DIR=/usr/local/etc \
+ENV PHP_VERSION=${PHP_VERSION:-5.6.33}
+ENV PHP_TGZ_URL=http://cn2.php.net/distributions/php-${PHP_VERSION}.tar.gz \
+	PHP_INI_DIR=/usr/local/etc \
 	PATH=/root/.composer/vendor/bin:$PATH \
-	TERM=linux \
 	COMPOSER_ALLOW_SUPERUSER=1
 
 # Apply stack smash protection to functions using local buffers and alloca()
@@ -24,37 +23,35 @@ ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
 RUN set -xe \
 	&& buildDeps=" \
-		coreutils \
-		curl-dev \
-		libedit-dev \
-		libressl-dev \
 		libxml2-dev \
-		sqlite-dev \
-		gettext-dev \
-		bzip2-dev \
-		libjpeg-turbo-dev \
+		libssl-dev \
+		libbz2-dev \
+		libcurl4-openssl-dev \
+		libjpeg-dev \
 		libpng-dev \
-		freetype-dev \
-		icu-dev \
-		gmp-dev \
-		tidyhtml-dev \
+		libfreetype6-dev \
+		libgmp-dev \
+		libmcrypt-dev \
+		libedit-dev \
+		libtidy-dev \
 		libxslt-dev \
-		libzip-dev \
 	" \
 	\
-#	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
-	&& apk add --no-cache --virtual .build-deps \
-		$PHPIZE_DEPS \
-	    $buildDeps  \
+#	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
+	&& apt-get update && apt-get install -y --no-install-recommends --no-install-suggests mcrypt $buildDeps && rm -r /var/lib/apt/lists/* \
 	\
 	&& export CFLAGS="$PHP_CFLAGS" \
 		CPPFLAGS="$PHP_CPPFLAGS" \
 		LDFLAGS="$PHP_LDFLAGS" \
-	&& cd /tmp \
+	&& if [ ! -f /usr/include/gmp.h ]; then \
+		ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h; \
+	fi \
+	&& cd /usr/local/src \
 	&& curl -fSL ${PHP_TGZ_URL} -o php-${PHP_VERSION}.tar.gz \
 	&& tar zxf php-${PHP_VERSION}.tar.gz \
 	&& rm -f php-${PHP_VERSION}.tar.gz \
-	&& cd /tmp/php-${PHP_VERSION} \
+	&& cd php-${PHP_VERSION} \
+	&& /sbin/ldconfig \
 	&& ./configure \
 		--prefix=/usr/local \
 		--libdir=/usr/local/lib64 \
@@ -64,32 +61,30 @@ RUN set -xe \
 		--with-openssl \
 		--with-kerberos \
 		--with-zlib \
-		--with-curl \
 		--with-bz2 \
+		--with-curl \
 		--with-png-dir \
 		--with-gd \
 		--with-jpeg-dir \
-		--with-libzip \
 		--with-xmlrpc \
 		--with-libedit \
-		--with-iconv-dir=/usr \
+		--with-iconv-dir=/usr/local \
 		--with-xsl \
-		--with-gmp \
-		--with-tidy \
-		--with-pcre-dir \
-		--with-readline \
-		--with-pcre-regex \
-		--with-pcre-jit \
-		--with-freetype-dir \
-		--with-zlib-dir \
-		--without-pear \
-		--with-mcrypt \
 		--with-mysqli=mysqlnd \
 		--with-pdo-mysql=mysqlnd \
 		--with-pdo-sqlite \
 		--with-sqlite3 \
 		--with-mhash \
+		--with-mcrypt \
+		--without-pear \
 		--with-gettext \
+		--with-gmp \
+		--with-tidy \
+		--with-pcre-dir \
+		--with-readline \
+		--with-pcre-regex \
+		--with-freetype-dir \
+		--with-zlib-dir \
 		--with-libdir=lib64 \
 		--enable-bcmath \
 		--enable-calendar \
@@ -107,57 +102,41 @@ RUN set -xe \
 		--enable-sysvshm \
 		--enable-wddx \
 		--enable-zip \
-		--enable-xml \
+		--enable-xml  \
 		--disable-rpath \
-		--enable-inline-optimization \
+		--enable-inline-optimization  \
 		--enable-pcntl \
 		--enable-fileinfo \
 		--enable-intl \
 		--enable-opcache \
 		--enable-cli \
 		--enable-fpm \
-	&& make ZEND_EXTRA_LIBS='-liconv' \
+	&& make -j "$(nproc)" ZEND_EXTRA_LIBS='-liconv' \
 	&& make install \
-	&& rm -rf /tmp/php-${PHP_VERSION} \
+	&& rm -rf /usr/local/src/php-${PHP_VERSION} \
 	&& mkdir -p ${PHP_INI_DIR}/php \
 	&& mkdir -p /var/lib/php \
-	&& runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
-			| tr ',' '\n' \
-			| sort -u \
-			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-	)" \
-	&& apk add --no-cache --virtual .php-rundeps $runDeps \
-	&& apk del .build-deps
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
 RUN set -xe \
-	&& apk add --no-cache \
-		libmemcached \
-		yaml \
-		nghttp2 \
-		cyrus-sasl \
-		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
-		yaml-dev \
-		nghttp2-dev \
-		libressl-dev \
-		cyrus-sasl-dev \
-		linux-headers \
-		zlib-dev \
+		libyaml-dev \
+		libnghttp2-dev \
+		libssl-dev \
 	" \
 	\
-	&& apk add --no-cache --virtual .build-deps \
-		$PHPIZE_DEPS \
-	    $buildDeps  \
+#	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
+	&& apt-get update && apt-get install -y --no-install-recommends --no-install-suggests libmemcached11 libyaml-0-2 libnghttp2-14 $buildDeps && rm -r /var/lib/apt/lists/* \
 	\
-	&& msgpackVersion=2.0.2 \
+	&& msgpackVersion=0.5.7 \
 		igbinaryVersion=2.0.5 \
-		memcachedVersion=3.0.4 \
+		memcachedVersion=2.2.0 \
 		redisVersion=3.1.6 \
-		yamlVersion=2.0.2 \
+		yamlVersion=1.3.1 \
+		memcacheVersion=3.0.8 \
 		swooleVersion=2.0.12 \
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/msgpack-${msgpackVersion}.tgz -o msgpack-${msgpackVersion}.tgz \
 	&& tar zxf msgpack-${msgpackVersion}.tgz \
 	&& rm -rf msgpack-${msgpackVersion}.tgz \
@@ -166,10 +145,10 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/msgpack-${msgpackVersion} \
+	&& rm -rf /usr/local/src/msgpack-${msgpackVersion} \
 	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/igbinary-${igbinaryVersion}.tgz -o igbinary-${igbinaryVersion}.tgz \
 	&& tar zxf igbinary-${igbinaryVersion}.tgz \
 	&& rm -rf igbinary-${igbinaryVersion}.tgz \
@@ -178,10 +157,22 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/igbinary-${igbinaryVersion} \
+	&& rm -rf /usr/local/src/igbinary-${igbinaryVersion} \
 	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
+	&& curl -fSL http://pecl.php.net/get/memcache-${memcacheVersion}.tgz -o memcache-${memcacheVersion}.tgz \
+	&& tar zxf memcache-${memcacheVersion}.tgz \
+	&& rm -rf memcache-${memcacheVersion}.tgz \
+	&& cd memcache-${memcacheVersion} \
+	&& phpize \
+	&& ./configure --enable-memcache --with-zlib-dir --with-libdir=lib64 \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /usr/local/src/memcache-${memcachedVersion} \
+	&& echo "extension=memcache.so" >> ${PHP_INI_DIR}/php/memcache.ini \
+	\
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/memcached-${memcachedVersion}.tgz -o memcached-${memcachedVersion}.tgz \
 	&& tar zxf memcached-${memcachedVersion}.tgz \
 	&& rm -rf memcached-${memcachedVersion}.tgz \
@@ -190,10 +181,10 @@ RUN set -xe \
 	&& ./configure --enable-memcached --enable-memcached-igbinary --enable-memcached-json --enable-memcached-msgpack --with-libdir=lib64 \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/memcached-${memcachedVersion} \
+	&& rm -rf /usr/local/src/memcached-${memcachedVersion} \
 	&& echo "extension=memcached.so" >> ${PHP_INI_DIR}/php/memcached.ini \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/redis-${redisVersion}.tgz -o redis-${redisVersion}.tgz \
 	&& tar zxf redis-${redisVersion}.tgz \
 	&& rm -rf redis-${redisVersion}.tgz \
@@ -202,10 +193,10 @@ RUN set -xe \
 	&& ./configure --enable-redis --enable-redis-igbinary \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/redis-${redisVersion} \
+	&& rm -rf /usr/local/src/redis-${redisVersion} \
 	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/yaml-${yamlVersion}.tgz -o yaml-${yamlVersion}.tgz \
 	&& tar zxf yaml-${yamlVersion}.tgz \
 	&& rm -rf yaml-${yamlVersion}.tgz \
@@ -214,19 +205,19 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/yaml-${yamlVersion} \
+	&& rm -rf /usr/local/src/yaml-${yamlVersion} \
 	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL https://github.com/redis/hiredis/archive/v0.13.3.tar.gz -o hiredis-0.13.3.tar.gz \
 	&& tar zxf hiredis-0.13.3.tar.gz \
 	&& rm -rf hiredis-0.13.3.tar.gz \
 	&& cd hiredis-0.13.3 \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/hiredis-0.13.3 \
+	&& rm -rf /usr/local/src/hiredis-0.13.3 \
 	\
-	&& cd /tmp \
+	&& cd /usr/local/src \
 	&& curl -fSL http://pecl.php.net/get/swoole-${swooleVersion}.tgz -o swoole-${swooleVersion}.tgz \
 	&& tar zxf swoole-${swooleVersion}.tgz \
 	&& rm -rf swoole-${swooleVersion}.tgz \
@@ -235,9 +226,10 @@ RUN set -xe \
 	&& ./configure --enable-http2 --enable-openssl --enable-sockets --enable-mysqlnd --enable-async-redis \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/swoole-${swooleVersion} \
+	&& rm -rf /usr/local/src/swoole-${swooleVersion} \
 	&& echo "extension=swoole.so" >> ${PHP_INI_DIR}/php/swoole.ini \
-	&& apk del .build-deps
+	\
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
 # Add configuration files
 COPY image-files/ /
