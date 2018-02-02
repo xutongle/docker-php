@@ -9,7 +9,7 @@ ENV NGINX_VERSION=${NGINX_VERSION:-1.13.8}
 ENV NGINX_TGZ_URL http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 ENV NGINX_INI_DIR=/usr/local/etc/nginx
 
-RUN apk add --no-cache pcre zlib supervisor
+RUN apk add --no-cache pcre zlib gd supervisor
 
 RUN set -xe \
 	&& buildDeps=" \
@@ -18,6 +18,7 @@ RUN set -xe \
 		libressl-dev \
 		libxml2-dev \
 		libxslt-dev \
+		gd-dev \
 	" \
 	\
 	&& apk add --no-cache --virtual .build-deps \
