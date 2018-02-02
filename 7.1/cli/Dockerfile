@@ -77,7 +77,7 @@ RUN set -xe \
 		--with-libzip \
 		--with-xmlrpc \
 		--with-libedit \
-		--with-iconv-dir=/usr/local \
+		--with-iconv-dir=/usr \
 		--with-xsl \
 		--with-gmp \
 		--with-tidy \
