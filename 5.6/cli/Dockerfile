@@ -162,7 +162,7 @@ RUN set -xe \
 		yamlVersion=1.3.1 \
 		memcacheVersion=3.0.8 \
 		swooleVersion=2.0.12 \
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/msgpack-${msgpackVersion}.tgz -o msgpack-${msgpackVersion}.tgz \
 	&& tar zxf msgpack-${msgpackVersion}.tgz \
 	&& rm -rf msgpack-${msgpackVersion}.tgz \
@@ -171,10 +171,10 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/msgpack-${msgpackVersion} \
+	&& rm -rf /tmp/msgpack-${msgpackVersion} \
 #	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/igbinary-${igbinaryVersion}.tgz -o igbinary-${igbinaryVersion}.tgz \
 	&& tar zxf igbinary-${igbinaryVersion}.tgz \
 	&& rm -rf igbinary-${igbinaryVersion}.tgz \
@@ -183,10 +183,10 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/igbinary-${igbinaryVersion} \
+	&& rm -rf /tmp/igbinary-${igbinaryVersion} \
 #	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/memcache-${memcacheVersion}.tgz -o memcache-${memcacheVersion}.tgz \
 	&& tar zxf memcache-${memcacheVersion}.tgz \
 	&& rm -rf memcache-${memcacheVersion}.tgz \
@@ -195,10 +195,10 @@ RUN set -xe \
 	&& ./configure --enable-memcache --with-zlib-dir --with-libdir=lib64 \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/memcache-${memcachedVersion} \
+	&& rm -rf /tmp/memcache-${memcachedVersion} \
 #	&& echo "extension=memcache.so" >> ${PHP_INI_DIR}/php/memcache.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/memcached-${memcachedVersion}.tgz -o memcached-${memcachedVersion}.tgz \
 	&& tar zxf memcached-${memcachedVersion}.tgz \
 	&& rm -rf memcached-${memcachedVersion}.tgz \
@@ -207,10 +207,10 @@ RUN set -xe \
 	&& ./configure --enable-memcached --enable-memcached-igbinary --enable-memcached-json --enable-memcached-msgpack --with-libdir=lib64 \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/memcached-${memcachedVersion} \
+	&& rm -rf /tmp/memcached-${memcachedVersion} \
 #	&& echo "extension=memcached.so" >> ${PHP_INI_DIR}/php/memcached.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/redis-${redisVersion}.tgz -o redis-${redisVersion}.tgz \
 	&& tar zxf redis-${redisVersion}.tgz \
 	&& rm -rf redis-${redisVersion}.tgz \
@@ -219,7 +219,7 @@ RUN set -xe \
 	&& ./configure --enable-redis --enable-redis-igbinary \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/redis-${redisVersion} \
+	&& rm -rf /tmp/redis-${redisVersion} \
 #	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
 	\
 	&& cd /usr/local/src \
@@ -231,19 +231,19 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/yaml-${yamlVersion} \
+	&& rm -rf /tmp/yaml-${yamlVersion} \
 #	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL https://github.com/redis/hiredis/archive/v0.13.3.tar.gz -o hiredis-0.13.3.tar.gz \
 	&& tar zxf hiredis-0.13.3.tar.gz \
 	&& rm -rf hiredis-0.13.3.tar.gz \
 	&& cd hiredis-0.13.3 \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/hiredis-0.13.3 \
+	&& rm -rf /tmp/hiredis-0.13.3 \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/swoole-${swooleVersion}.tgz -o swoole-${swooleVersion}.tgz \
 	&& tar zxf swoole-${swooleVersion}.tgz \
 	&& rm -rf swoole-${swooleVersion}.tgz \
@@ -252,7 +252,7 @@ RUN set -xe \
 	&& ./configure --enable-http2 --enable-openssl --enable-sockets --enable-mysqlnd --enable-async-redis \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /usr/local/src/swoole-${swooleVersion} \
+	&& rm -rf /tmp/swoole-${swooleVersion} \
 #	&& echo "extension=swoole.so" >> ${PHP_INI_DIR}/php/swoole.ini \
 	\
 	&& apk del .build-deps
