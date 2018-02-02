@@ -16,6 +16,7 @@ RUN set -xe \
 		pcre-dev \
 		zlib-dev \
 		libressl-dev \
+		libxml2-dev \
 	" \
 	\
 	&& apk add --no-cache --virtual .build-deps \
