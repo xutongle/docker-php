@@ -173,7 +173,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/msgpack-${msgpackVersion} \
-	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
+#	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/igbinary-${igbinaryVersion}.tgz -o igbinary-${igbinaryVersion}.tgz \
@@ -185,7 +185,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/igbinary-${igbinaryVersion} \
-	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
+#	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/memcached-${memcachedVersion}.tgz -o memcached-${memcachedVersion}.tgz \
@@ -197,7 +197,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/memcached-${memcachedVersion} \
-	&& echo "extension=memcached.so" >> ${PHP_INI_DIR}/php/memcached.ini \
+#	&& echo "extension=memcached.so" >> ${PHP_INI_DIR}/php/memcached.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/redis-${redisVersion}.tgz -o redis-${redisVersion}.tgz \
@@ -209,7 +209,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/redis-${redisVersion} \
-	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
+#	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/yaml-${yamlVersion}.tgz -o yaml-${yamlVersion}.tgz \
@@ -221,7 +221,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/yaml-${yamlVersion} \
-	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
+#	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL https://github.com/redis/hiredis/archive/v0.13.3.tar.gz -o hiredis-0.13.3.tar.gz \
@@ -242,7 +242,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/swoole-${swooleVersion} \
-	&& echo "extension=swoole.so" >> ${PHP_INI_DIR}/php/swoole.ini \
+#	&& echo "extension=swoole.so" >> ${PHP_INI_DIR}/php/swoole.ini \
 	&& apk del .build-deps
 
 # Add configuration files
