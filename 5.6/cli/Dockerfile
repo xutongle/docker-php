@@ -44,7 +44,7 @@ RUN set -xe \
 		libzip-dev \
 	" \
 	\
-	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
+#	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
 	&& apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 	    $buildDeps  \
