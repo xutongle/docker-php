@@ -36,7 +36,7 @@ RUN set -xe \
 		sqlite-dev \
 		gettext-dev \
 		bzip2-dev \
-		jpeg-dev \
+		libjpeg-turbo-dev \
 		libpng-dev \
 		freetype-dev \
 		icu-dev \
