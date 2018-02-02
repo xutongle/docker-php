@@ -23,8 +23,7 @@ ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
 RUN set -x \
-	&& apk add --no-cache --virtual \
-		libmcrypt
+	&& apk add --no-cache libmcrypt
 
 RUN set -xe \
 	&& buildDeps=" \
