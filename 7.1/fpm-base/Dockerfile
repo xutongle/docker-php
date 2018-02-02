@@ -138,17 +138,18 @@ RUN set -xe \
 RUN set -xe \
 	&& apk add --no-cache \
 		libmemcached \
+		libevent \
 		yaml \
 		nghttp2 \
 		cyrus-sasl \
 		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
+		libevent-dev \
 		yaml-dev \
 		nghttp2-dev \
 		libressl-dev \
 		cyrus-sasl-dev \
-		linux-headers \
 		zlib-dev \
 	" \
 	\

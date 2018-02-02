@@ -21,37 +21,44 @@ ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
+RUN set -x \
+	&& apk add --no-cache --virtual \
+		libmcrypt
+
 RUN set -xe \
 	&& buildDeps=" \
-		libxml2-dev \
-		libssl-dev \
-		libbz2-dev \
-		libcurl4-openssl-dev \
-		libjpeg-dev \
-		libpng-dev \
-		libfreetype6-dev \
-		libgmp-dev \
-		libmcrypt-dev \
+		coreutils \
+		curl-dev \
 		libedit-dev \
-		libtidy-dev \
+		libressl-dev \
+		libxml2-dev \
+		sqlite-dev \
+		gettext-dev \
+		bzip2-dev \
+		libjpeg-turbo-dev \
+		libpng-dev \
+		freetype-dev \
+		icu-dev \
+		gmp-dev \
+		tidyhtml-dev \
 		libxslt-dev \
+		libzip-dev \
 	" \
 	\
-#	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
-	&& apt-get update && apt-get install -y --no-install-recommends --no-install-suggests mcrypt $buildDeps && rm -r /var/lib/apt/lists/* \
+#	&& echo -e "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/main\nhttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.7/community" > /etc/apk/repositories \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+	    $buildDeps  \
+	    libmcrypt-dev \
 	\
 	&& export CFLAGS="$PHP_CFLAGS" \
 		CPPFLAGS="$PHP_CPPFLAGS" \
 		LDFLAGS="$PHP_LDFLAGS" \
-	&& if [ ! -f /usr/include/gmp.h ]; then \
-		ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h; \
-	fi \
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL ${PHP_TGZ_URL} -o php-${PHP_VERSION}.tar.gz \
 	&& tar zxf php-${PHP_VERSION}.tar.gz \
 	&& rm -f php-${PHP_VERSION}.tar.gz \
-	&& cd php-${PHP_VERSION} \
-	&& /sbin/ldconfig \
+	&& cd /tmp/php-${PHP_VERSION} \
 	&& ./configure \
 		--prefix=/usr/local \
 		--libdir=/usr/local/lib64 \
@@ -61,30 +68,32 @@ RUN set -xe \
 		--with-openssl \
 		--with-kerberos \
 		--with-zlib \
-		--with-bz2 \
 		--with-curl \
+		--with-bz2 \
 		--with-png-dir \
 		--with-gd \
 		--with-jpeg-dir \
+		--with-libzip \
 		--with-xmlrpc \
 		--with-libedit \
-		--with-iconv-dir=/usr/local \
+		--with-iconv-dir=/usr \
 		--with-xsl \
-		--with-mysqli=mysqlnd \
-		--with-pdo-mysql=mysqlnd \
-		--with-pdo-sqlite \
-		--with-sqlite3 \
-		--with-mhash \
-		--with-mcrypt \
-		--without-pear \
-		--with-gettext \
 		--with-gmp \
 		--with-tidy \
 		--with-pcre-dir \
 		--with-readline \
 		--with-pcre-regex \
+		--with-pcre-jit \
 		--with-freetype-dir \
 		--with-zlib-dir \
+		--without-pear \
+		--with-mcrypt \
+		--with-mysqli=mysqlnd \
+		--with-pdo-mysql=mysqlnd \
+		--with-pdo-sqlite \
+		--with-sqlite3 \
+		--with-mhash \
+		--with-gettext \
 		--with-libdir=lib64 \
 		--enable-bcmath \
 		--enable-calendar \
@@ -102,32 +111,48 @@ RUN set -xe \
 		--enable-sysvshm \
 		--enable-wddx \
 		--enable-zip \
-		--enable-xml  \
+		--enable-xml \
 		--disable-rpath \
-		--enable-inline-optimization  \
+		--enable-inline-optimization \
 		--enable-pcntl \
 		--enable-fileinfo \
 		--enable-intl \
 		--enable-opcache \
 		--enable-cli \
 		--enable-fpm \
-	&& make -j "$(nproc)" ZEND_EXTRA_LIBS='-liconv' \
+	&& make ZEND_EXTRA_LIBS='-liconv' \
 	&& make install \
-	&& rm -rf /usr/local/src/php-${PHP_VERSION} \
+	&& rm -rf /tmp/php-${PHP_VERSION} \
 	&& mkdir -p ${PHP_INI_DIR}/php \
 	&& mkdir -p /var/lib/php \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
+	&& runDeps="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	)" \
+	&& apk add --no-cache --virtual .php-rundeps $runDeps \
+	&& apk del .build-deps
 
 RUN set -xe \
+	&& apk add --no-cache \
+		libmemcached \
+		yaml \
+		nghttp2 \
+		cyrus-sasl \
+		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
-		libyaml-dev \
-		libnghttp2-dev \
-		libssl-dev \
+		yaml-dev \
+		nghttp2-dev \
+		libressl-dev \
+		cyrus-sasl-dev \
+		zlib-dev \
 	" \
 	\
-#	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
-	&& apt-get update && apt-get install -y --no-install-recommends --no-install-suggests libmemcached11 libyaml-0-2 libnghttp2-14 $buildDeps && rm -r /var/lib/apt/lists/* \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+	    $buildDeps  \
 	\
 	&& msgpackVersion=0.5.7 \
 		igbinaryVersion=2.0.5 \

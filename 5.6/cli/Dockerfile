@@ -134,15 +134,24 @@ RUN set -xe \
 	&& apk del .build-deps
 
 RUN set -xe \
+	&& apk add --no-cache \
+		libmemcached \
+		yaml \
+		nghttp2 \
+		cyrus-sasl \
+		zlib \
 	&& buildDeps=" \
 		libmemcached-dev \
-		libyaml-dev \
-		libnghttp2-dev \
-		libssl-dev \
+		yaml-dev \
+		nghttp2-dev \
+		libressl-dev \
+		cyrus-sasl-dev \
+		zlib-dev \
 	" \
 	\
-#	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /etc/apt/sources.list \
-	&& apt-get update && apt-get install -y --no-install-recommends --no-install-suggests libmemcached11 libyaml-0-2 libnghttp2-14 $buildDeps && rm -r /var/lib/apt/lists/* \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+	    $buildDeps  \
 	\
 	&& msgpackVersion=0.5.7 \
 		igbinaryVersion=2.0.5 \
