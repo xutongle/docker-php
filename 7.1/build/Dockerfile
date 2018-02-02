@@ -12,6 +12,8 @@ RUN set -xe \
 ENV XDEBUG_VERSION 2.5.5
 
 RUN set -xe \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/xdebug-${XDEBUG_VERSION}.tgz -o xdebug-${XDEBUG_VERSION}.tgz \
 	&& tar zxf xdebug-${XDEBUG_VERSION}.tgz \
@@ -23,6 +25,8 @@ RUN set -xe \
 	&& make install \
 	&& rm -rf /tmp/xdebug-${XDEBUG_VERSION} \
 	&& echo "zend_extension=xdebug.so" >> ${PHP_INI_DIR}/php/xdebug.ini
+	\
+	&& apk del .build-deps
 
 ENV YUI_COMPRESSOR_VERSION=2.4.8
 ENV YUI_COMPRESSOR_JAR=https://github.com/yui/yuicompressor/releases/download/v${YUI_COMPRESSOR_VERSION}/yuicompressor-${YUI_COMPRESSOR_VERSION}.jar
