@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+export PS1="\e[0;35mphd \e[0;37m\u container \h \e[0;32m\w \e[0;0m\n$ "
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+    if [ -x "$(command -v supervisord-foreground)" ]; then
+        set -- supervisord-foreground "$@"
+    elif [ -x "$(command -v httpd-foreground)" ]; then
+        set -- httpd-foreground "$@"
+    elif [ -x "$(command -v php-fpm)" ]; then
+        set -- php-fpm "$@"
+    else
+        set -- php "$@"
+    fi
+fi
+
+exec "$@"
+

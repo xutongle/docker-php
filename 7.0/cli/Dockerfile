@@ -5,7 +5,7 @@ LABEL maintainer="xutongle@gmail.com"
 ARG PHP_VERSION
 
 # Environment settings
-ENV PHP_VERSION ${PHP_VERSION:-7.2.1}
+ENV PHP_VERSION ${PHP_VERSION:-7.0.26}
 ENV PHP_TGZ_URL http://php.net/distributions/php-${PHP_VERSION}.tar.gz
 ENV PHP_INI_DIR=/usr/local/etc \
 	PATH=/root/.composer/vendor/bin:$PATH \
@@ -21,6 +21,10 @@ ENV PHP_INI_DIR=/usr/local/etc \
 ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
+
+RUN set -x \
+	&& apk add --no-cache --virtual \
+		libmcrypt
 
 RUN set -xe \
 	&& buildDeps=" \
@@ -46,6 +50,7 @@ RUN set -xe \
 	&& apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 	    $buildDeps  \
+	    libmcrypt-dev \
 	\
 	&& export CFLAGS="$PHP_CFLAGS" \
 		CPPFLAGS="$PHP_CPPFLAGS" \
@@ -141,7 +146,6 @@ RUN set -xe \
 		nghttp2-dev \
 		libressl-dev \
 		cyrus-sasl-dev \
-		linux-headers \
 	" \
 	\
 	&& apk add --no-cache --virtual .build-deps \

@@ -125,6 +125,120 @@ RUN set -xe \
 	&& rm -rf /tmp/php-${PHP_VERSION} \
 	&& mkdir -p ${PHP_INI_DIR}/php \
 	&& mkdir -p /var/lib/php \
+	&& runDeps="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	)" \
+	&& apk add --no-cache --virtual .php-rundeps $runDeps \
+	&& apk del .build-deps
+
+RUN set -xe \
+	&& apk add --no-cache \
+		libmemcached \
+		yaml \
+		nghttp2 \
+		cyrus-sasl \
+	&& buildDeps=" \
+		libmemcached-dev \
+		yaml-dev \
+		nghttp2-dev \
+		libressl-dev \
+		cyrus-sasl-dev \
+		linux-headers \
+	" \
+	\
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+	    $buildDeps  \
+	\
+	&& msgpackVersion=2.0.2 \
+		igbinaryVersion=2.0.5 \
+		memcachedVersion=3.0.4 \
+		redisVersion=3.1.6 \
+		yamlVersion=2.0.2 \
+		swooleVersion=2.0.12 \
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/msgpack-${msgpackVersion}.tgz -o msgpack-${msgpackVersion}.tgz \
+	&& tar zxf msgpack-${msgpackVersion}.tgz \
+	&& rm -rf msgpack-${msgpackVersion}.tgz \
+	&& cd msgpack-${msgpackVersion} \
+	&& phpize \
+	&& ./configure \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/msgpack-${msgpackVersion} \
+	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/igbinary-${igbinaryVersion}.tgz -o igbinary-${igbinaryVersion}.tgz \
+	&& tar zxf igbinary-${igbinaryVersion}.tgz \
+	&& rm -rf igbinary-${igbinaryVersion}.tgz \
+	&& cd igbinary-${igbinaryVersion} \
+	&& phpize \
+	&& ./configure \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/igbinary-${igbinaryVersion} \
+	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/memcached-${memcachedVersion}.tgz -o memcached-${memcachedVersion}.tgz \
+	&& tar zxf memcached-${memcachedVersion}.tgz \
+	&& rm -rf memcached-${memcachedVersion}.tgz \
+	&& cd memcached-${memcachedVersion} \
+	&& phpize \
+	&& ./configure --enable-memcached --enable-memcached-igbinary --enable-memcached-json --enable-memcached-msgpack --with-libdir=lib64 \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/memcached-${memcachedVersion} \
+	&& echo "extension=memcached.so" >> ${PHP_INI_DIR}/php/memcached.ini \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/redis-${redisVersion}.tgz -o redis-${redisVersion}.tgz \
+	&& tar zxf redis-${redisVersion}.tgz \
+	&& rm -rf redis-${redisVersion}.tgz \
+	&& cd redis-${redisVersion} \
+	&& phpize \
+	&& ./configure --enable-redis --enable-redis-igbinary \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/redis-${redisVersion} \
+	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/yaml-${yamlVersion}.tgz -o yaml-${yamlVersion}.tgz \
+	&& tar zxf yaml-${yamlVersion}.tgz \
+	&& rm -rf yaml-${yamlVersion}.tgz \
+	&& cd yaml-${yamlVersion} \
+	&& phpize \
+	&& ./configure \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/yaml-${yamlVersion} \
+	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
+	\
+	&& cd /tmp \
+	&& curl -fSL https://github.com/redis/hiredis/archive/v0.13.3.tar.gz -o hiredis-0.13.3.tar.gz \
+	&& tar zxf hiredis-0.13.3.tar.gz \
+	&& rm -rf hiredis-0.13.3.tar.gz \
+	&& cd hiredis-0.13.3 \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/hiredis-0.13.3 \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/swoole-${swooleVersion}.tgz -o swoole-${swooleVersion}.tgz \
+	&& tar zxf swoole-${swooleVersion}.tgz \
+	&& rm -rf swoole-${swooleVersion}.tgz \
+	&& cd swoole-${swooleVersion} \
+	&& phpize \
+	&& ./configure --enable-http2 --enable-openssl --enable-sockets --enable-mysqlnd --enable-async-redis \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/swoole-${swooleVersion} \
+	&& echo "extension=swoole.so" >> ${PHP_INI_DIR}/php/swoole.ini \
 	&& apk del .build-deps
 
 # Add configuration files
