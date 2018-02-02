@@ -10,7 +10,7 @@ RUN set -xe \
 	&& mkdir -p ~/.ssh \
 	&& printf "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
-ENV XDEBUG_VERSION 2.5.5
+ENV XDEBUG_VERSION 2.6.0beta1
 
 RUN set -xe \
 
