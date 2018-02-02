@@ -222,7 +222,7 @@ RUN set -xe \
 	&& rm -rf /tmp/redis-${redisVersion} \
 #	&& echo "extension=redis.so" >> ${PHP_INI_DIR}/php/redis.ini \
 	\
-	&& cd /usr/local/src \
+	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/yaml-${yamlVersion}.tgz -o yaml-${yamlVersion}.tgz \
 	&& tar zxf yaml-${yamlVersion}.tgz \
 	&& rm -rf yaml-${yamlVersion}.tgz \
