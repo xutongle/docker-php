@@ -3,7 +3,7 @@ FROM xutongle/php:7.1-cli
 LABEL maintainer="xutongle@gmail.com"
 
 RUN set -xe \
-	&& apk add --no-cache openssh-client git subversion curl wget unzip diffutils gpgme openjdk8 \
+	&& apk add --no-cache openssh-client git subversion curl wget unzip diffutils gpgme dpkg openjdk8 \
 # Disable host key checking from within builds as we cannot interactively accept them
 # TODO: It might be a better idea to bake ~/.ssh/known_hosts into the container
 	&& mkdir -p ~/.ssh \
