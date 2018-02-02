@@ -1,4 +1,4 @@
-FROM xutongle/php:7.2-fpm-base
+FROM xutongle/php:7.0-fpm-base
 
 LABEL maintainer="xutongle@gmail.com"
 

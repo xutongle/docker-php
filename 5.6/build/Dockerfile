@@ -1,4 +1,4 @@
-FROM xutongle/php:7.1-cli
+FROM xutongle/php:5.6-cli
 
 LABEL maintainer="xutongle@gmail.com"
 
