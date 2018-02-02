@@ -57,7 +57,7 @@ RUN set -xe \
 	&& cd /tmp \
 	&& curl -fSL ${PHP_TGZ_URL} -o php-${PHP_VERSION}.tar.gz \
 	&& tar zxf php-${PHP_VERSION}.tar.gz \
-	&& rm -f php-${PHP_VERSION}.tar.gz
+	&& rm -f php-${PHP_VERSION}.tar.gz \
 	&& cd /tmp/php-${PHP_VERSION} \
 	&& ./configure \
 		--prefix=/usr/local \
