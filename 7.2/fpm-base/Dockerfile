@@ -169,7 +169,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/msgpack-${msgpackVersion} \
-	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/msgpack.ini \
+	&& echo "extension=msgpack.so" >> ${PHP_INI_DIR}/php/01-msgpack.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/igbinary-${igbinaryVersion}.tgz -o igbinary-${igbinaryVersion}.tgz \
@@ -181,7 +181,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/igbinary-${igbinaryVersion} \
-	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/igbinary.ini \
+	&& echo "extension=igbinary.so" >> ${PHP_INI_DIR}/php/02-igbinary.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/memcached-${memcachedVersion}.tgz -o memcached-${memcachedVersion}.tgz \
