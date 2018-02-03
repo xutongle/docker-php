@@ -1,4 +1,10 @@
-# 支持的标签和相应的 `Dockerfile` 链接
+# 基于 alpine 3.7 构建的 PHP执行环境
+
+## Build Status
+
+[![Build Status](https://travis-ci.org/xutongle/docker-php.svg?branch=master)](https://travis-ci.org/xutongle/docker-php) 
+
+## 支持的标签和相应的 `Dockerfile` 链接
 
 -	[`7.2.1-cli`, `7.2-cli`(*7.2/cli/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/7.2/cli/Dockerfile)
 -	[`7.2.1-fpm`, `7.2-fpm`(*7.2/fpm/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/7.2/fpm/Dockerfile)
@@ -20,10 +26,6 @@
 -	[`5.6.33-fpm-base`, `5.6-fpm-base`(*5.6/fpm-base/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/5.6/fpm-base/Dockerfile)
 -	[`5.6.33-build`, `5.6-build`(*5.6/build/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/5.6/build/Dockerfile)
 -	[`5.6.33-nginx`, `5.6-nginx`(*5.6/nginx/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/5.6/nginx/Dockerfile)
-
-# Build Status
-
-[![Build Status](https://travis-ci.org/xutongle/docker-php.svg?branch=master)](https://travis-ci.org/xutongle/docker-php) 
 
 ## Container layout
 
