@@ -6,6 +6,8 @@
 
 ## 支持的标签和相应的 `Dockerfile` 链接
 
+标签说明，以 `x.x.x-fpm-base` 方式命名的标签，为没有开9000端口的FPM版本。用来作为父镜像打包 `nginx` 版本。
+
 -	[`7.2.1-cli`, `7.2-cli`(*7.2/cli/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/7.2/cli/Dockerfile)
 -	[`7.2.1-fpm`, `7.2-fpm`(*7.2/fpm/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/7.2/fpm/Dockerfile)
 -	[`7.2.1-nginx`, `7.2-nginx`(*7.2/nginx/Dockerfile*)](https://github.com/xutongle/docker-php/blob/master/7.2/nginx/Dockerfile)
@@ -31,10 +33,10 @@
 
 Container                               | Distribution name        | PHP Version
 --------------------------------------- | ------------------------ | --------------
-`xutl/php:5.6`      | xenial (LTS)             | PHP 5.6
-`xutl/php:7.0`      | xenial (LTS)             | PHP 7.0
-`xutl/php:7.1`      | xenial (LTS)             | PHP 7.1
-`xutl/php:7.2`      | xenial (LTS)             | PHP 7.2
+`xutl/php:5.6`      | alpine 3.7             | PHP 5.6
+`xutl/php:7.0`      | alpine 3.7             | PHP 7.0
+`xutl/php:7.1`      | alpine 3.7             | PHP 7.1
+`xutl/php:7.2`      | alpine 3.7             | PHP 7.2
 
 ## Filesystem layout
 
@@ -60,14 +62,19 @@ Expand                                                | Version
 `memcached`               | 2.2.0/3.0.4
 `redis`             | 3.1.6
 `yaml`             | 1.3.1/2.0.2
+`yaconf`             | 1.0.7
 `xdebug`             | 2.5.5 Only build tags
 
 ## Build Tag
 
+`build` 版标签包含的软件包，用来执行 `composer` 命令，打包前端脚本、执行单元测试(包含 xdebug 扩展)等。 
+
 openssh-client git subversion curl wget nano unzip diffutils ntp openjdk-8-jdk yuicompressor closure-compiler nodejs-8.9.4 yarn-1.3.2
 
 ### Path
+
 /usr/local/bin/yuicompressor.jar
+
 /usr/local/bin/closure-compiler.jar
 
 
