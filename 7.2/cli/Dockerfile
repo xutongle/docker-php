@@ -227,7 +227,8 @@ RUN set -xe \
 	&& ./configure \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& rm -rf /tmp/yaconf-${yamlVersion} \
+	&& rm -rf /tmp/yaconf-${yaconfVersion} \
+	&& mkdir -p /usr/local/etc/yaconf \
 #	&& echo "extension=yaconf.so" >> ${PHP_INI_DIR}/php/yaconf.ini \
 	\
 	&& cd /tmp \
