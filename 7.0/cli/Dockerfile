@@ -232,7 +232,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/yaconf-${yamlVersion} \
-#	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
+#	&& echo "extension=yaconf.so" >> ${PHP_INI_DIR}/php/yaconf.ini \
 	\
 	&& cd /tmp \
 	&& curl -fSL https://github.com/redis/hiredis/archive/v0.13.3.tar.gz -o hiredis-0.13.3.tar.gz \
