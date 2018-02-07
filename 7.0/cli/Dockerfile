@@ -161,6 +161,7 @@ RUN set -xe \
 		memcachedVersion=3.0.4 \
 		redisVersion=3.1.6 \
 		yamlVersion=2.0.2 \
+		yaconfVersion=1.0.7 \
 		swooleVersion=2.0.12 \
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/msgpack-${msgpackVersion}.tgz -o msgpack-${msgpackVersion}.tgz \
@@ -220,6 +221,17 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& rm -rf /tmp/yaml-${yamlVersion} \
+	\
+	&& cd /tmp \
+	&& curl -fSL http://pecl.php.net/get/yaconf-${yaconfVersion}.tgz -o yaconf-${yaconfVersion}.tgz \
+	&& tar zxf yaconf-${yaconfVersion}.tgz \
+	&& rm -rf yaconf-${yaconfVersion}.tgz \
+	&& cd yaconf-${yaconfVersion} \
+	&& phpize \
+	&& ./configure \
+	&& make -j "$(nproc)" \
+	&& make install \
+	&& rm -rf /tmp/yaconf-${yamlVersion} \
 #	&& echo "extension=yaml.so" >> ${PHP_INI_DIR}/php/yaml.ini \
 	\
 	&& cd /tmp \
