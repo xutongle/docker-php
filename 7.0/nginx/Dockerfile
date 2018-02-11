@@ -67,6 +67,7 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& mkdir -p /var/lib/nginx \
+	&& mkdir -p /usr/local/etc/nginx/sites \
 	&& rm -rf /tmp/nginx-${NGINX_VERSION} \
 	\
 	&& apk del .build-deps
