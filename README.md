@@ -51,7 +51,7 @@ File                                                | Description
 `/usr/local/etc/php.ini`                          | PHP configuration
 `/usr/local/etc/nginx/nginx.conf`                 | Global nginx configuration options
 `/usr/local/etc/php-fpm.d/www.conf`               | php-fpm pool configuration
-`/usr/local/etc/php/fpm/php-fpm.conf`             | PHP FPM daemon configuration
+`/usr/local/etc/php/php-fpm.conf`             | PHP FPM daemon configuration
 
 ## Expand
 
@@ -63,6 +63,7 @@ Expand                                                | Version
 `redis`             | 3.1.6
 `yaml`             | 1.3.1/2.0.2
 `yaconf`             | 1.0.7
+`swoole`             | 2.1.0
 `xdebug`             | 2.5.5 Only build tags
 
 ## Build Tag
