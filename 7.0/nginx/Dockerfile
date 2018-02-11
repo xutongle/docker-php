@@ -1,3 +1,6 @@
+# 第一阶段编译
+FROM xutongle/php:5.6-nginx AS nginx
+
 FROM xutongle/php:7.0-fpm-base
 
 LABEL maintainer="xutongle@gmail.com"
@@ -74,6 +77,10 @@ RUN set -xe \
 
 # Add configuration files
 COPY image-files/ /
+
+COPY --from=nginx /usr/local/etc/nginx /usr/local/etc/nginx
+
+COPY --from=nginx /usr/local/html /usr/local/html
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
