@@ -5,7 +5,7 @@ LABEL maintainer="xutongle@gmail.com"
 ARG NGINX_VERSION
 
 # Environment settings
-ENV NGINX_VERSION=${NGINX_VERSION:-1.13.8}
+ENV NGINX_VERSION=${NGINX_VERSION:-1.13.9}
 ENV NGINX_TGZ_URL http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 ENV NGINX_INI_DIR=/usr/local/etc/nginx
 
