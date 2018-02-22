@@ -119,7 +119,6 @@ RUN set -xe \
 	&& make install \
 	&& rm -rf /tmp/php-${PHP_VERSION} \
 	&& mkdir -p ${PHP_INI_DIR}/php \
-	&& mkdir -p /var/lib/php \
 	&& runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 			| tr ',' '\n' \
