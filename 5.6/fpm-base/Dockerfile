@@ -5,7 +5,7 @@ LABEL maintainer="xutongle@gmail.com"
 ARG PHP_VERSION
 
 # Environment settings
-ENV PHP_VERSION=${PHP_VERSION:-5.6.33}
+ENV PHP_VERSION=${PHP_VERSION:-5.6.34}
 ENV PHP_TGZ_URL=http://cn2.php.net/distributions/php-${PHP_VERSION}.tar.gz \
 	PHP_INI_DIR=/usr/local/etc \
 	PATH=/root/.composer/vendor/bin:$PATH \
