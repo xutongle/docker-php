@@ -22,7 +22,7 @@ env:
     - VARIANT=cli MAJOR_VERSION=7.1 PHP_VERSION=${PHP71_VERSION}
     - VARIANT=cli MAJOR_VERSION=7.0 PHP_VERSION=${PHP70_VERSION}
     - VARIANT=cli MAJOR_VERSION=7.2 PHP_VERSION=${PHP72_VERSION}
-    
+
     - VARIANT=fpm-base MAJOR_VERSION=7.0 PHP_VERSION=${PHP70_VERSION}
     - VARIANT=fpm-base MAJOR_VERSION=5.6 PHP_VERSION=${PHP56_VERSION}
     - VARIANT=fpm-base MAJOR_VERSION=7.1 PHP_VERSION=${PHP71_VERSION}
@@ -69,8 +69,8 @@ after_success:
           docker push xutongle/php:latest;
           docker tag $image xutongle/php:${PHP_VERSION};
           docker push xutongle/php:${PHP_VERSION};
-          docker tag $image xutongle/php:${VERSION};
-          docker push xutongle/php:${VERSION};
+          docker tag $image xutongle/php:${MAJOR_VERSION};
+          docker push xutongle/php:${MAJOR_VERSION};
         fi
       fi
     fi
