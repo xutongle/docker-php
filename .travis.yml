@@ -49,18 +49,13 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-jobs:
-  include:
-    - stage: compile
-      script: travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" .
-
 before_script:
   - env | sort
   - cd "$MAJOR_VERSION/$VARIANT"
   - image="xutongle/php:${MAJOR_VERSION}-${VARIANT}"
 
-#script:
-#  - travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" .
+script:
+  - travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" .
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
