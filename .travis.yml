@@ -5,34 +5,26 @@ sudo: required
 services:
   - docker
 
+stages:
+  - compile
+  - name: deploy
+    if: branch = master
+
 env:
-##   5.6
-#  - VERSION=5.6 VARIANT=cli PHP_VERSION=5.6.34
-#  - VERSION=5.6 VARIANT=fpm-base PHP_VERSION=5.6.34
-#  - VERSION=5.6 VARIANT=fpm PHP_VERSION=5.6.34
-#  - VERSION=5.6 VARIANT=nginx PHP_VERSION=5.6.34
-#  - VERSION=5.6 VARIANT=build PHP_VERSION=5.6.34
-##   7.0
-#  - VERSION=7.0 VARIANT=cli PHP_VERSION=7.0.28
-#  - VERSION=7.0 VARIANT=fpm-base PHP_VERSION=7.0.28
-#  - VERSION=7.0 VARIANT=fpm PHP_VERSION=7.0.28
-#  - VERSION=7.0 VARIANT=nginx PHP_VERSION=7.0.28
-#  - VERSION=7.0 VARIANT=build PHP_VERSION=7.0.28
-##   7.1
-#  - VERSION=7.1 VARIANT=cli PHP_VERSION=7.1.15
-#  - VERSION=7.1 VARIANT=fpm-base PHP_VERSION=7.1.15
-#  - VERSION=7.1 VARIANT=fpm PHP_VERSION=7.1.15
-#  - VERSION=7.1 VARIANT=nginx PHP_VERSION=7.1.15
-#  - VERSION=7.1 VARIANT=build PHP_VERSION=7.1.15
-##   7.2
-#  - VERSION=7.2 VARIANT=cli PHP_VERSION=7.2.3
-#  - VERSION=7.2 VARIANT=fpm-base PHP_VERSION=7.2.3
-  - VERSION=7.2 VARIANT=fpm PHP_VERSION=7.2.3
-  - VERSION=7.2 VARIANT=nginx PHP_VERSION=7.2.3
-  - VERSION=7.2 VARIANT=build PHP_VERSION=7.2.3
+  global:
+    - DOCKER_COMPOSE_VERSION=1.18.0
+    - VARIANT=cli
+    - VARIANT=fpm-base
+    - VARIANT=fpm
+    - VARIANT=nginx
+    - VARIANT=build
+  matrix:
+    - MAJOR_VERSION=5.6 PHP_VERSION=5.6.34
+    - MAJOR_VERSION=7.0 PHP_VERSION=7.0.28
+    - MAJOR_VERSION=7.1 PHP_VERSION=7.1.15
+    - MAJOR_VERSION=7.2 PHP_VERSION=7.2.3
 
 before_install:
-  - export DOCKER_COMPOSE_VERSION=1.18.0
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
@@ -40,8 +32,8 @@ before_install:
 
 before_script:
   - env | sort
-  - cd "$VERSION/$VARIANT"
-  - image="xutongle/php:${VERSION}-${VARIANT}"
+  - cd "$MAJOR_VERSION/$VARIANT"
+  - image="xutongle/php:${MAJOR_VERSION}-${VARIANT}"
 
 script:
   - travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" .
@@ -52,7 +44,7 @@ after_success:
       docker push $image;
       docker tag $image xutongle/php:${PHP_VERSION}-${VARIANT};
       docker push xutongle/php:${PHP_VERSION}-${VARIANT};
-      if [ "${VERSION}" == "7.1" ]; then
+      if [ "${MAJOR_VERSION}" == "7.1" ]; then
         if [ "${VARIANT}" == "fpm" ]; then
           docker tag $image xutongle/php:latest;
           docker push xutongle/php:latest;
