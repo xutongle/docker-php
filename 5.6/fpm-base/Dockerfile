@@ -9,7 +9,8 @@ ENV PHP_VERSION=${PHP_VERSION}
 ENV PHP_TGZ_URL=http://php.net/distributions/php-${PHP_VERSION}.tar.gz \
 	PHP_INI_DIR=/usr/local/etc \
 	PATH=/root/.composer/vendor/bin:$PATH \
-	COMPOSER_ALLOW_SUPERUSER=1
+	COMPOSER_ALLOW_SUPERUSER=1 \
+	PHP_ENABLE_SWOOLE=0
 
 # Apply stack smash protection to functions using local buffers and alloca()
 # Make PHP's main executable position-independent (improves ASLR security mechanism, and has no performance impact on x86_64)
