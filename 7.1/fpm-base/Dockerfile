@@ -161,7 +161,7 @@ RUN set -xe \
 		redisVersion=3.1.6 \
 		yamlVersion=2.0.2 \
 		yaconfVersion=1.0.7 \
-		swooleVersion=2.1.0 \
+		swooleVersion=2.1.1 \
 	&& cd /tmp \
 	&& curl -fSL http://pecl.php.net/get/msgpack-${msgpackVersion}.tgz -o msgpack-${msgpackVersion}.tgz \
 	&& tar zxf msgpack-${msgpackVersion}.tgz \
