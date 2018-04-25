@@ -52,9 +52,9 @@ before_script:
 
 script:
   - if [ "$VARIANT" == "nginx" ]; then
-      travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} --build-arg NGINX_VERSION=${NGINX_VERSION} -t "$image" .
+      travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} --build-arg NGINX_VERSION=${NGINX_VERSION} -t "$image" . ;
     else
-      travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" .
+      travis_retry docker build --build-arg PHP_VERSION=${PHP_VERSION} -t "$image" . ;
     fi
 
 after_success:
