@@ -1,4 +1,4 @@
-FROM xutl/base-php:alpine-3.7
+FROM xutl/base-php:alpine-3.8
 
 LABEL maintainer="xutongle@gmail.com"
 
